@@ -2,12 +2,12 @@ package flyme_push
 
 import (
 	"github.com/cocotyty/httpclient"
-	"code.aliyun.com/app-channel-adapter/api/flyme_push/consts"
 	"encoding/json"
 	"fmt"
 	"sort"
 	"crypto/md5"
 	"encoding/hex"
+	"github.com/Houjingchao/flyme_push/consts"
 )
 
 /**

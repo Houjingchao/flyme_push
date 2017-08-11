@@ -2,9 +2,9 @@ package flyme_push
 
 import (
 	"testing"
-	"code.aliyun.com/app-channel-adapter/api/flyme_push/model"
-	"code.aliyun.com/app-channel-adapter/api/flyme_push/consts"
 	"fmt"
+	"github.com/Houjingchao/flyme_push/model"
+	"github.com/Houjingchao/flyme_push/consts"
 )
 
 func TestSendNotificationMessageByPushId(t *testing.T) {
