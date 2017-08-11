@@ -3,157 +3,157 @@ package flyme_push
 import (
 	"github.com/cocotyty/httpclient"
 	"encoding/json"
-	"fmt"
 	"sort"
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/Houjingchao/flyme_push/consts"
 )
 
+type FlymePush struct {
+	AppId  string
+	AppKey string
+}
+
 /**
  * 通过PushId推送透传消息
  */
-func SendThroughByPushIds(appId, pushIds, messageJson, appKey string) string {
+func (f FlymePush) SendThroughByPushIds(pushIds, messageJson string) error {
 	sendByPushIds := map[string]string{
-		"appId":       appId,
+		"appId":       f.AppId,
 		"pushIds":     pushIds,
 		"messageJson": messageJson,
 	}
-	sign := GenerateSign(sendByPushIds, appKey)
-	req, err := httpclient.
+	sign := GenerateSign(sendByPushIds, f.AppKey)
+	_, err := httpclient.
 	Post(consts.PushThroughMessageByPushId).
 		Head("charset", "UTF-8").
-		Param("appId", appId).
+		Param("appId", f.AppId).
 		Param("pushIds", pushIds). //多个逗号隔开
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
 	if err != nil {
-		panic("SendThroughByPushIds 报错了～～")
+		return err
 	}
-	fmt.Println(req)
-	return req
+	return nil
 }
 
 //pushId推送接口（通知栏消息）
-func SendNotificationMessageByPushId(appId string, pushIds string, messageJson string, appKey string) string {
+func (f FlymePush) SendNotificationMessageByPushId(pushIds string, messageJson string) error {
 	pushNotificationMessageMap := map[string]string{
-		"appId":       appId,
+		"appId":       f.AppId,
 		"pushIds":     pushIds,
 		"messageJson": messageJson,
 	}
-	sign := GenerateSign(pushNotificationMessageMap, appKey)
-	req, err := httpclient.
+	sign := GenerateSign(pushNotificationMessageMap, f.AppKey)
+	_, err := httpclient.
 	Post(consts.PushNotificationMessageByPushId).
 		Head("charset", "UTF-8").
-		Param("appId", appId).
+		Param("appId", f.AppId).
 		Param("pushIds", pushIds). //多个逗号隔开
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
 	if err != nil {
-		panic("SendNotificationMessageByPushId 报错了～～")
+		return err
 	}
-	fmt.Println(req)
-	return req
+
+	return nil
 }
 
 //别名推送接口（通知栏消息）
-func SendNotificationMessageByAlias(appId string, alias string, messageJson string, appKey string) string {
+func (f FlymePush) SendNotificationMessageByAlias(alias string, messageJson string) error {
 	maps := map[string]string{
-		"appId":       appId,
+		"appId":       f.AppId,
 		"alias":       alias,
 		"messageJson": messageJson,
 	}
 
-	sign := GenerateSign(maps, appKey)
-	req, err := httpclient.
+	sign := GenerateSign(maps, f.AppKey)
+	_, err := httpclient.
 	Post(consts.PushNotificationMessageByAlias).
 		Head("charset", "UTF-8").
-		Param("appId", appId).
+		Param("appId", f.AppId).
 		Param("alias", alias). //推送别名，一批最多不能超过1000个多个英文逗号分割（必填）
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
 	if err != nil {
-		panic("PushNotificationMessageByAlias 报错了～～")
+		return err
 	}
-	fmt.Println(req)
-	return req
+	return nil
 }
+
 /*******************************************标签推送****************************************/
 //全部推送
-func SendAllMessage(appId string, pushType string, messageJson string, appKey string) string {
+func (f FlymePush) SendAllMessage(pushType string, messageJson string) error {
 	maps := map[string]string{
-		"appId":       appId,
+		"appId":       f.AppId,
 		"pushType":    pushType,
 		"messageJson": messageJson,
 	}
 
-	sign := GenerateSign(maps, appKey)
-	req, err := httpclient.
+	sign := GenerateSign(maps, f.AppKey)
+	_, err := httpclient.
 	Post(consts.PushAllMessage).
 		Head("charset", "UTF-8").
-		Param("appId", appId).
+		Param("appId", f.AppId).
 		Param("pushType", pushType).
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
 	if err != nil {
-		panic("SendAllMessage 报错了～～")
+		return err
 	}
-	fmt.Println(req)
-	return req
+	return nil
 }
 
 // 标签推送
-func SendMessageByTipic(appId string, pushType string, tagNames string, scope string, messageJson string, appKey string) string {
+func (f FlymePush) SendMessageByTipic(pushType string, tagNames string, scope string, messageJson string) error {
 	maps := map[string]string{
-		"appId":       appId,
+		"appId":       f.AppId,
 		"pushType":    pushType,
 		"tagNames":    tagNames,
 		"scope":       scope,
 		"messageJson": messageJson,
 	}
 
-	sign := GenerateSign(maps, appKey)
-	req, err := httpclient.
+	sign := GenerateSign(maps, f.AppKey)
+	_, err := httpclient.
 	Post(consts.PushMessageByTipic).
 		Head("charset", "UTF-8").
-		Param("appId", appId).
+		Param("appId", f.AppId).
 		Param("pushType", pushType).
 		Param("tagNames", tagNames).
-		Param("scope", scope).//标签集合（必填）0 并集1 交集
+		Param("scope", scope). //标签集合（必填）0 并集1 交集
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
 	if err != nil {
-		panic("SendAllMessage 报错了～～")
+		return err
 	}
-	fmt.Println(req)
-	return req
+	return nil
 }
 
 /********************************推送统计*******************************/
 //PushStatistics get 请求
-func SendStatistics(appId string, taskId string , appKey string) string {
+func (f FlymePush) SendStatistics( taskId string) error {
 	maps := map[string]string{
-		"appId":       appId,
-		"taskId":    taskId,
+		"appId":   f.AppId,
+		"taskId": taskId,
 	}
-	sign := GenerateSign(maps, appKey)
-	req, err := httpclient.
+	sign := GenerateSign(maps, f.AppKey)
+	_, err := httpclient.
 	Post(consts.PushStatistics).
 		Head("charset", "UTF-8").
-		Param("appId", appId).
+		Param("appId",  f.AppId).
 		Param("taskId", taskId).
 		Param("sign", sign).
 		Send().String()
 	if err != nil {
-		panic("PushStatistics 报错了～～")
+		return err
 	}
-	fmt.Println(req)
-	return req
+	return nil
 }
 func GenerateSign(params map[string]string, appKey string) string {
 	var signStr string
