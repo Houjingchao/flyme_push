@@ -9,8 +9,8 @@ import (
 
 func TestSendNotificationMessageByPushId(t *testing.T) {
 	flymePush := FlymePush{
-		AppId:  "appid",
-		AppKey: "appkey",
+		AppId:  "111038",
+		AppKey: "ba6d999443774533818f9781697b9882",
 	}
 	json := model.NewdNotificationMessage().
 		NoticeBarType(2). //android 原生

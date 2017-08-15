@@ -18,10 +18,14 @@ type FlymePush struct {
 }
 
 type Response struct {
-	Code     string `json:"code"`
-	Message  string `json:"message"`
-	Value    string `json:"value"`
+	Code string `json:"code"`
+	Message string `json:"message"`
+	Value    Value `json:"value"`
 	Redirect string `json:"redirect"`
+	MsgID string `json:"msgId"`
+}
+
+type Value struct {
 }
 
 /**
@@ -45,6 +49,7 @@ func (f FlymePush) SendThroughByPushIds(pushIds, messageJson string) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -64,13 +69,12 @@ func (f FlymePush) SendNotificationMessageByPushId(pushIds string, messageJson s
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
-	fmt.Println(respStr)
-	res:=Response{}
-	json.Unmarshal([]byte(respStr),res)
+	res := &Response{}
+	json.Unmarshal([]byte(respStr), res)
 	if err != nil {
 		return err
 	}
-	if strings.EqualFold(res.Code,"200") {
+	if strings.EqualFold(res.Code, "200") {
 		return nil
 	}
 	return errors.New(string(respStr))
