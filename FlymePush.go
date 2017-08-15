@@ -7,7 +7,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/Houjingchao/flyme_push/consts"
-	"fmt"
 	"strings"
 	"errors"
 )
@@ -18,11 +17,11 @@ type FlymePush struct {
 }
 
 type Response struct {
-	Code string `json:"code"`
-	Message string `json:"message"`
+	Code     string `json:"code"`
+	Message  string `json:"message"`
 	Value    Value `json:"value"`
 	Redirect string `json:"redirect"`
-	MsgID string `json:"msgId"`
+	MsgID    string `json:"msgId"`
 }
 
 type Value struct {
