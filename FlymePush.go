@@ -7,11 +7,21 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/Houjingchao/flyme_push/consts"
+	"fmt"
+	"strings"
+	"errors"
 )
 
 type FlymePush struct {
 	AppId  string
 	AppKey string
+}
+
+type Response struct {
+	Code     string `json:"code"`
+	Message  string `json:"message"`
+	Value    string `json:"value"`
+	Redirect string `json:"redirect"`
 }
 
 /**
@@ -46,7 +56,7 @@ func (f FlymePush) SendNotificationMessageByPushId(pushIds string, messageJson s
 		"messageJson": messageJson,
 	}
 	sign := GenerateSign(pushNotificationMessageMap, f.AppKey)
-	_, err := httpclient.
+	respStr, err := httpclient.
 	Post(consts.PushNotificationMessageByPushId).
 		Head("charset", "UTF-8").
 		Param("appId", f.AppId).
@@ -54,11 +64,16 @@ func (f FlymePush) SendNotificationMessageByPushId(pushIds string, messageJson s
 		Param("sign", sign).
 		Param("messageJson", messageJson).
 		Send().String()
+	fmt.Println(respStr)
+	res:=Response{}
+	json.Unmarshal([]byte(respStr),res)
 	if err != nil {
 		return err
 	}
-
-	return nil
+	if strings.EqualFold(res.Code,"200") {
+		return nil
+	}
+	return errors.New(string(respStr))
 }
 
 //别名推送接口（通知栏消息）
@@ -137,16 +152,16 @@ func (f FlymePush) SendMessageByTipic(pushType string, tagNames string, scope st
 
 /********************************推送统计*******************************/
 //PushStatistics get 请求
-func (f FlymePush) SendStatistics( taskId string) error {
+func (f FlymePush) SendStatistics(taskId string) error {
 	maps := map[string]string{
-		"appId":   f.AppId,
+		"appId":  f.AppId,
 		"taskId": taskId,
 	}
 	sign := GenerateSign(maps, f.AppKey)
 	_, err := httpclient.
 	Post(consts.PushStatistics).
 		Head("charset", "UTF-8").
-		Param("appId",  f.AppId).
+		Param("appId", f.AppId).
 		Param("taskId", taskId).
 		Param("sign", sign).
 		Send().String()
