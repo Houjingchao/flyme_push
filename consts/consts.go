@@ -4,7 +4,7 @@ package consts
 const (
 	AppID  = "AppID"
 	AppKey = "AppKey"
-	Host   = "Host"
+	Host   = "https://api-push.meizu.com"
 	PushID = "PushID"
 )
 const (
