@@ -34,7 +34,7 @@ type NoticeExpandInfo struct {
 type ClickTypeInfo struct {
 	ClickType       int                    `json:"clickType"`
 	Url             string                 `json:"url"`
-	Parameters      map[string]interface{} `json:"parameters"`
+	Parameters      map[string]string `json:"parameters"`
 	Activity        string                 `json:"activity"`
 	CustomAttribute string                 `json:"customAttribute"`
 }
@@ -69,7 +69,9 @@ type AdvanceInfo struct {
 	FixEndDisplayTime   string           `json:"fixEndDisplayTime"`
 	NotificationType    NotificationType `json:"notificationType"`
 }
-
+type UserTypeInfo struct {
+	UserType int `json:"userType"`
+}
 type NotificationType struct {
 	Vibrate int `json:"vibrate"`
 	Lights  int `json:"lights"`
@@ -79,6 +81,7 @@ type NotificationType struct {
 type NotificationMessage struct {
 	NoticeBarInfo    NoticeBarInfo    `json:"noticeBarInfo"`
 	NoticeExpandInfo NoticeExpandInfo `json:"noticeExpandInfo"`
+	UserTypeInfo     UserTypeInfo `json:"userTypeInfo"`
 	ClickTypeInfo    ClickTypeInfo    `json:"clickTypeInfo"`
 	PushTimeInfo     PushTimeInfo     `json:"pushTimeInfo"`
 	AdvanceInfo      AdvanceInfo      `json:"advanceInfo"`
@@ -136,7 +139,7 @@ func (message *NotificationMessage) NoticeClickUrl(url string) *NotificationMess
 	return message
 }
 
-func (message *NotificationMessage) NoticeClickParams(params map[string]interface{}) *NotificationMessage {
+func (message *NotificationMessage) NoticeClickParams(params map[string]string) *NotificationMessage {
 	message.ClickTypeInfo.Parameters = params
 	return message
 }
@@ -206,27 +209,27 @@ func NewdNotificationMessage() *NotificationMessage { //go 对int 默认初始�
 		NoticeBarInfo: NoticeBarInfo{
 			NoticeBarType: 2,
 			Title:         "", //暂时为空 后来需要设置
-			Content:       "", //暂时为空 后来的需要设置
+			Content:       "", //暂时为空 后来的需要设置 和title类似
 		},
 		NoticeExpandInfo: NoticeExpandInfo{
-			NoticeExpandType:    0,
+			NoticeExpandType:    1,
 			NoticeExpandContent: "",
 		},
 
 		ClickTypeInfo: ClickTypeInfo{
 			ClickType:       0,
 			Url:             "",
-			Parameters:      map[string]interface{}{"test": "test"},
+			Parameters:      map[string]string{},
 			Activity:        "",
 			CustomAttribute: "",
 		},
 		PushTimeInfo: PushTimeInfo{
-			OffLine:   0,
+			OffLine:   1,
 			ValidTime: 24,
 		},
 		AdvanceInfo: AdvanceInfo{
-			Suspend:             0,
-			ClearNoticeBar:      0,
+			Suspend:             1,
+			ClearNoticeBar:      1,
 			FixDisplay:          0,
 			FixStartDisplayTime: "",
 			FixEndDisplayTime:   "",
